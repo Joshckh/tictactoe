@@ -69,7 +69,21 @@ const game = (() => {
     };
 })();
 
-const display = (() =>{
-   
-})()
+const display = (() => {
+    const tiles = document.querySelectorAll(".tile");
+  
+    const clickHandler = (e) => {
+      const clickedTile = e.target; // Get the clicked tile element
+      const row = parseInt(clickedTile.dataset.row);
+      const col = parseInt(clickedTile.dataset.col);
+      console.log(row, col);
+    };
+  
+    tiles.forEach((tile) => {
+      tile.addEventListener("click", clickHandler);
+    });
+  
+    return {};
+  })();
+  
 
