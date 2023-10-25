@@ -97,27 +97,43 @@ const game = (() => {
         placeX,
         placeO,
         checkWin,
+        clearBoard,
+        board,
     };
 })();
 
 const display = (() => {
     const tiles = document.querySelectorAll(".tile");
     let xTurn = true
+    let botMatch = false
+    
+
     const clickHandler = (e) => {
         const clickedTile = e.target; 
         const row = parseInt(clickedTile.dataset.row);
         const col = parseInt(clickedTile.dataset.col);
 
-        if (xTurn === true) {
+        if (botMatch === false){
+
+            if (xTurn === true) {
+                game.placeX(row, col);
+                clickedTile.classList.add("xIcon");
+                xTurn = false;
+                game.checkWin();
+            } else {
+                game.placeO(row, col);
+                clickedTile.classList.add("oIcon");
+                xTurn = true;
+                game.checkWin();
+            }}
+        else{
+
             game.placeX(row, col);
             clickedTile.classList.add("xIcon");
-            xTurn = false;
             game.checkWin();
-        } else {
-            game.placeO(row, col);
-            clickedTile.classList.add("oIcon");
-            xTurn = true;
+            randomBotMove();
             game.checkWin();
+
         }
     };
 
@@ -133,9 +149,44 @@ const display = (() => {
     
     }
     
+    const restart = () => {
+        game.clearBoard();
+        start();
+    }
+
+    const restarBtn = document.querySelector(".restartBtn")
+
+    restarBtn.addEventListener("click",restart)
+
+    
+    const switchBot = () => {
+        display.botMatch = !display.botMatch;
+    }
+
+
+    const randomBotMove = () => {
+        let emptySpot = [];
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) { // Fixed the loop to iterate through all columns
+                if (game.board[i][j] === 0) {
+                    emptySpot.push([i, j]); // Push an array [i, j] for empty spot
+                }
+            }
+        }
+    
+        if (emptySpot.length > 0) {
+            const randomIndex = Math.floor(Math.random() * emptySpot.length);
+            const [row, col] = emptySpot[randomIndex]; // Destructuring the array
+            game.placeO(row, col);
+            tiles[row * 3 + col].classList.add("oIcon");
+        }
+    };
     
     return {
         start,
+        botMatch,
+        switchBot,
+
     };
 })();
 
